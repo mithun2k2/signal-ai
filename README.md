@@ -3,7 +3,7 @@
 
 Built for the **Progress x GitNation Hackathon 2025** (JSNation / React Summit)
 
-🌐 **Live Demo:** [signal-ai.vercel.app](https://signal-ai.vercel.app)
+🌐 **Live Demo:** [signal-ai-blond.vercel.app](https://signal-ai-blond.vercel.app)
 
 ---
 
