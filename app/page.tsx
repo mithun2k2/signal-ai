@@ -38,6 +38,8 @@ export default function OnboardingPage() {
       setStep(step + 1);
     } else {
       storage.setProfile(profile);
+      storage.clearAll();
+      storage.setProfile(profile);
       demoCaptures.forEach(c => storage.addCapture(c));
       router.push('/capture');
     }
