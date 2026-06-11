@@ -110,7 +110,7 @@ export default function ROIDashboard() {
 
         {/* ROI Gauge */}
         <div className="glass" style={{ padding: '24px', textAlign: 'center' }}>
-          <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'rgba(196,181,253,0.7)', marginBottom: '4px', letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '11px' }}>
+          <h3 style={{ fontSize: '11px', fontWeight: '600', color: 'rgba(196,181,253,0.7)', marginBottom: '4px', letterSpacing: '0.04em', textTransform: 'uppercase'}}>
             Overall Conference ROI Score
           </h3>
           <div style={{ display: 'flex', justifyContent: 'center', margin: '8px 0' }}>

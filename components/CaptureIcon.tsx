@@ -1,7 +1,8 @@
+import React from 'react';
 type IconType = 'note' | 'slide' | 'contact' | 'url' | 'quote' | 'target' | 'bolt' | 'brain' | 'rocket' | 'bulb' | 'user';
 
 export default function CaptureIcon({ type, size = 20 }: { type: IconType; size?: number }) {
-  const icons: Record<IconType, JSX.Element> = {
+  const icons: Record<IconType, React.ReactElement> = {
     note: (
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
         <defs>
