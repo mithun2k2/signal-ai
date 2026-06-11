@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ⚡ SignalAI
+### Turn conference chaos into career capital — automatically.
+
+Built for the **Progress x GitNation Hackathon 2025** (JSNation / React Summit)
+
+🌐 **Live Demo:** [signal-ai.vercel.app](https://signal-ai.vercel.app)
+
+---
+
+## The Problem
+
+You spend £1,500 to attend a tech conference.
+You sit through 20 talks. You collect 50 contacts. You screenshot 30 slides.
+
+Then you go home — and 80% of it evaporates within 72 hours.
+
+The notes go nowhere. The contacts go cold. The insights never make it into your actual work.
+
+**SignalAI fixes this.**
+
+---
+
+## How It Works
+
+### 1. 📥 Capture (during the conference)
+Save anything in seconds — slides, notes, contacts, URLs, quotes — with optional context tagging.
+
+### 2. 🧠 Synthesise (end of day)
+Claude AI reads every capture alongside your personal profile (what you're building, what problem you're stuck on) and generates insights **specific to your situation** — not generic takeaways.
+
+### 3. ⚡ Act (Monday morning)
+- Personalised action plan for the week
+- Follow-up emails written for every contact
+- LinkedIn post ready to publish
+- Conference ROI score: 0–100
+
+---
+
+## Features
+
+- **5 capture types** — slide, note, contact, URL, quote
+- **AI synthesis engine** — Claude API generates personalised insights
+- **Follow-up email writer** — one per contact, referencing exactly how you met
+- **LinkedIn post generator** — your unique take, not a generic recap
+- **ROI Dashboard** — Kendo UI RadialGauge + Chart components
+- **No backend** — fully client-side with localStorage
+- **Works offline** — all data stays on your device
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15 + TypeScript |
+| UI Components | **Kendo UI for React** (required) |
+| AI Engine | Claude API (Anthropic) |
+| Styling | Tailwind CSS |
+| Deployment | Vercel |
+| Storage | localStorage (no backend) |
+
+### Kendo UI Components Used
+- `Button` — onboarding, capture, synthesis actions
+- `Input` / `TextArea` — capture and onboarding forms
+- `ProgressBar` — synthesis loading indicator
+- `RadialGauge` — ROI score visualisation
+- `Chart` + `ChartSeries` — captures by type (column) + insight relevance (bar)
+
+---
 
 ## Getting Started
 
-First, run the development server:
+```bash
+git clone https://github.com/YOUR_USERNAME/signal-ai.git
+cd signal-ai
+npm install
+```
+
+Create `.env.local`:
+```
+NEXT_PUBLIC_ANTHROPIC_API_KEY=your_key_here
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+app/
+├── page.tsx          # Onboarding (3 questions)
+├── capture/          # Capture hub
+├── synthesis/        # AI synthesis + insights
+└── roi/              # ROI dashboard
+lib/
+├── types.ts          # TypeScript interfaces
+├── storage.ts        # localStorage helpers
+└── claude.ts         # Claude API integration
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Hackathon
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Event:** Progress x GitNation Hackathon 2025
+**Prize Pool:** €10,000
+**Stack requirement:** Kendo UI for React ✅
+**Team:** ForgeAI (solo)
+**Builder:** Mahmudul Hassan Mithun
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
