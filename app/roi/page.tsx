@@ -2,17 +2,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  Chart,
-  ChartSeries,
-  ChartSeriesItem,
-  ChartCategoryAxis,
-  ChartCategoryAxisItem,
-  ChartTitle,
-  ChartLegend,
+  Chart, ChartSeries, ChartSeriesItem,
+  ChartCategoryAxis, ChartCategoryAxisItem,
+  ChartTitle, ChartLegend, ChartValueAxis, ChartValueAxisItem,
 } from '@progress/kendo-react-charts';
 import { RadialGauge } from '@progress/kendo-react-gauges';
 import { storage } from '@/lib/storage';
 import { SynthesisReport, Capture } from '@/lib/types';
+import SignalLogo from '@/components/SignalLogo';
 
 export default function ROIDashboard() {
   const router = useRouter();
@@ -26,14 +23,11 @@ export default function ROIDashboard() {
 
   if (!report) {
     return (
-      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-5xl mb-4">📊</div>
-          <p className="text-gray-400 mb-6">No report yet. Run synthesis first.</p>
-          <button
-            onClick={() => router.push('/synthesis')}
-            className="text-violet-400 hover:text-violet-300 border border-violet-800 px-6 py-2 rounded-xl"
-          >
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '16px' }}>📊</div>
+          <p style={{ color: 'rgba(196,181,253,0.6)', marginBottom: '20px' }}>No report yet. Run synthesis first.</p>
+          <button className="btn-neon" onClick={() => router.push('/synthesis')} style={{ width: 'auto', padding: '10px 24px' }}>
             → Go to Synthesis
           </button>
         </div>
@@ -42,22 +36,19 @@ export default function ROIDashboard() {
   }
 
   const capturesByType = ['note', 'slide', 'contact', 'url', 'quote'].map(type => ({
-    type,
-    count: captures.filter(c => c.type === type).length,
+    type, count: captures.filter(c => c.type === type).length,
   }));
 
   const insightScores = report.topInsights.map(i => i.relevanceScore);
   const insightLabels = report.topInsights.map(i =>
-    i.title.length > 18 ? i.title.slice(0, 18) + '...' : i.title
+    i.title.length > 16 ? i.title.slice(0, 16) + '…' : i.title
   );
 
   const gaugeOptions = {
     value: report.roiScore,
-     pointer: { value: report.roiScore },
-      scale: {
-      min: 0,
-      max: 100,
-      majorUnit: 20,
+    pointer: { value: report.roiScore },
+    scale: {
+      min: 0, max: 100, majorUnit: 20,
       ranges: [
         { from: 0, to: 40, color: '#ef4444' },
         { from: 40, to: 70, color: '#f59e0b' },
@@ -77,85 +68,122 @@ export default function ROIDashboard() {
     URL.revokeObjectURL(url);
   };
 
+  const STAT_CARDS = [
+    { label: 'Captured', value: captures.length, icon: '📦', iconClass: 'icon-box-purple' },
+    { label: 'Insights', value: report.topInsights.length, icon: '🎯', iconClass: 'icon-box-blue' },
+    { label: 'Follow-ups', value: report.followUpEmails.length, icon: '📧', iconClass: 'icon-box-green' },
+    { label: 'Actions', value: report.actionItems.length, icon: '⚡', iconClass: 'icon-box-yellow' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div style={{ minHeight: '100vh', position: 'relative', zIndex: 1 }}>
 
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <button
-          onClick={() => router.push('/synthesis')}
-          className="text-gray-400 hover:text-white transition-colors"
-        >
+      <div className="header">
+        <button onClick={() => router.push('/synthesis')}
+          style={{ background: 'none', border: 'none', color: 'rgba(196,181,253,0.6)', cursor: 'pointer', fontSize: '14px' }}>
           ← Back
         </button>
-        <span className="font-bold">Conference ROI Dashboard</span>
-        <span className="text-violet-400 text-sm font-semibold">ForgeAI</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <SignalLogo size={24} />
+          <span style={{ fontWeight: '700', fontSize: '15px', color: '#f1f0ff' }}>ROI Dashboard</span>
+        </div>
+        <span style={{ fontSize: '12px', fontWeight: '700', color: 'rgba(167,139,250,0.5)', letterSpacing: '0.06em' }}>
+          FORGEAI
+        </span>
       </div>
 
-      <div className="max-w-2xl mx-auto p-6 space-y-6">
+      <div style={{ maxWidth: '640px', margin: '0 auto', padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-4 gap-3">
-          {[
-            { label: 'Captured', value: captures.length, color: 'text-violet-400' },
-            { label: 'Insights', value: report.topInsights.length, color: 'text-blue-400' },
-            { label: 'Follow-ups', value: report.followUpEmails.length, color: 'text-green-400' },
-            { label: 'Actions', value: report.actionItems.length, color: 'text-yellow-400' },
-          ].map(stat => (
-            <div key={stat.label} className="bg-gray-900 rounded-xl p-4 border border-gray-800 text-center">
-              <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
-              <div className="text-gray-500 text-xs mt-1">{stat.label}</div>
+        {/* Stat cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+          {STAT_CARDS.map(stat => (
+            <div key={stat.label} className="stat-card">
+              <div className={`icon-box ${stat.iconClass}`} style={{ width: '32px', height: '32px', fontSize: '16px', margin: '0 auto 8px' }}>
+                {stat.icon}
+              </div>
+              <div style={{ fontSize: '22px', fontWeight: '800', color: '#f1f0ff', lineHeight: 1 }}>{stat.value}</div>
+              <div style={{ fontSize: '11px', color: 'rgba(167,139,250,0.5)', marginTop: '4px', fontWeight: '600' }}>{stat.label}</div>
             </div>
           ))}
         </div>
 
         {/* ROI Gauge */}
-        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-          <h3 className="font-bold text-center mb-2">Overall Conference ROI Score</h3>
-          <div className="flex justify-center">
-            <RadialGauge
-              {...gaugeOptions}
-              style={{ width: 280, height: 180 }}
-            />
+        <div className="glass" style={{ padding: '24px', textAlign: 'center' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: '600', color: 'rgba(196,181,253,0.7)', marginBottom: '4px', letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '11px' }}>
+            Overall Conference ROI Score
+          </h3>
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '8px 0' }}>
+            <RadialGauge {...gaugeOptions} style={{ width: 260, height: 160 }} />
           </div>
-          <div className="text-center mt-2">
-            <span className="text-4xl font-bold text-violet-400">{report.roiScore}</span>
-            <span className="text-gray-400 ml-2 text-lg">/ 100</span>
-            <div className="text-gray-500 text-sm mt-1">{report.roiBreakdown.estimatedValue} Value</div>
+          <div>
+            <span style={{ fontSize: '40px', fontWeight: '800', color: '#a78bfa' }}>{report.roiScore}</span>
+            <span style={{ fontSize: '18px', color: 'rgba(167,139,250,0.4)', marginLeft: '6px' }}>/100</span>
+          </div>
+          <div style={{ fontSize: '13px', color: 'rgba(196,181,253,0.5)', marginTop: '4px' }}>
+            {report.roiBreakdown.estimatedValue} Value
           </div>
         </div>
 
-        {/* Captures by Type */}
-        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-          <h3 className="font-bold mb-4">Captures by Type</h3>
-          <Chart style={{ height: 220 }}>
+        {/* Captures by type chart */}
+        <div className="glass" style={{ padding: '20px' }}>
+          <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'rgba(196,181,253,0.7)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            Captures by Type
+          </h3>
+          <Chart style={{ height: 200 }}>
             <ChartTitle text="" />
             <ChartLegend visible={false} />
             <ChartCategoryAxis>
               <ChartCategoryAxisItem
                 categories={capturesByType.map(d => d.type)}
+                labels={{ color: 'rgba(196,181,253,0.5)', font: '12px sans-serif' }}
+                line={{ color: 'rgba(167,139,250,0.1)' }}
+                majorGridLines={{ visible: false }}
               />
             </ChartCategoryAxis>
+            <ChartValueAxis>
+              <ChartValueAxisItem
+                labels={{ color: 'rgba(196,181,253,0.4)', font: '11px sans-serif' }}
+                line={{ visible: false }}
+                majorGridLines={{ color: 'rgba(167,139,250,0.08)' }}
+              />
+            </ChartValueAxis>
             <ChartSeries>
               <ChartSeriesItem
                 type="column"
                 data={capturesByType.map(d => d.count)}
                 color="#7c3aed"
                 border={{ width: 0 }}
+                overlay={{ gradient: 'sharpBevel' }}
               />
             </ChartSeries>
           </Chart>
         </div>
 
-        {/* Insight Relevance */}
-        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-          <h3 className="font-bold mb-4">Insight Relevance Scores</h3>
-          <Chart style={{ height: 220 }}>
+        {/* Insight relevance chart */}
+        <div className="glass" style={{ padding: '20px' }}>
+          <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'rgba(196,181,253,0.7)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            Insight Relevance Scores
+          </h3>
+          <Chart style={{ height: 200 }}>
             <ChartTitle text="" />
             <ChartLegend visible={false} />
             <ChartCategoryAxis>
-              <ChartCategoryAxisItem categories={insightLabels} />
+              <ChartCategoryAxisItem
+                categories={insightLabels}
+                labels={{ color: 'rgba(196,181,253,0.5)', font: '11px sans-serif' }}
+                line={{ color: 'rgba(167,139,250,0.1)' }}
+                majorGridLines={{ visible: false }}
+              />
             </ChartCategoryAxis>
+            <ChartValueAxis>
+              <ChartValueAxisItem
+                min={0} max={10}
+                labels={{ color: 'rgba(196,181,253,0.4)', font: '11px sans-serif' }}
+                line={{ visible: false }}
+                majorGridLines={{ color: 'rgba(167,139,250,0.08)' }}
+              />
+            </ChartValueAxis>
             <ChartSeries>
               <ChartSeriesItem
                 type="bar"
@@ -167,34 +195,39 @@ export default function ROIDashboard() {
           </Chart>
         </div>
 
-        {/* Action Items Summary */}
-        <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-          <h3 className="font-bold mb-4">⚡ Your Action Plan</h3>
-          <div className="space-y-2">
-            {report.actionItems.map((item, i) => (
-              <div key={i} className="flex items-center gap-3 py-2">
-                <div className="w-5 h-5 rounded-full border-2 border-violet-500 flex-shrink-0" />
-                <span className="text-sm text-gray-300">{item}</span>
-              </div>
-            ))}
-          </div>
+        {/* Action plan */}
+        <div className="glass" style={{ padding: '20px' }}>
+          <h3 style={{ fontSize: '13px', fontWeight: '700', color: 'rgba(196,181,253,0.7)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            ⚡ Your Action Plan
+          </h3>
+          {report.actionItems.map((item, i) => (
+            <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '10px 0', borderBottom: i < report.actionItems.length - 1 ? '1px solid rgba(167,139,250,0.07)' : 'none' }}>
+              <div style={{ width: '20px', height: '20px', borderRadius: '50%', border: '2px solid rgba(124,58,237,0.4)', flexShrink: 0, marginTop: '2px' }} />
+              <span style={{ fontSize: '13px', color: 'rgba(221,214,254,0.75)', lineHeight: '1.5' }}>{item}</span>
+            </div>
+          ))}
         </div>
 
         {/* Export */}
-        <button
-          onClick={handleExport}
-          className="w-full py-3 rounded-xl border border-gray-700 text-gray-400 hover:border-violet-600 hover:text-violet-400 transition-all text-sm"
+        <button onClick={handleExport} style={{
+          width: '100%', padding: '12px', borderRadius: '12px',
+          border: '1px solid rgba(167,139,250,0.2)', background: 'transparent',
+          color: 'rgba(196,181,253,0.5)', cursor: 'pointer', fontSize: '13px', transition: 'all 0.15s',
+        }}
+          onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.4)'; e.currentTarget.style.color = '#a78bfa'; }}
+          onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.2)'; e.currentTarget.style.color = 'rgba(196,181,253,0.5)'; }}
         >
           📥 Export Full Conference Report (JSON)
         </button>
 
-        {/* New Conference */}
-        <button
-          onClick={() => {
-            storage.clearAll();
-            router.push('/');
-          }}
-          className="w-full py-3 rounded-xl border border-gray-800 text-gray-600 hover:border-red-900 hover:text-red-400 transition-all text-sm"
+        {/* Reset */}
+        <button onClick={() => { storage.clearAll(); router.push('/'); }} style={{
+          width: '100%', padding: '12px', borderRadius: '12px',
+          border: '1px solid rgba(239,68,68,0.15)', background: 'transparent',
+          color: 'rgba(239,68,68,0.35)', cursor: 'pointer', fontSize: '13px', transition: 'all 0.15s',
+        }}
+          onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; e.currentTarget.style.color = 'rgba(239,68,68,0.6)'; }}
+          onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(239,68,68,0.15)'; e.currentTarget.style.color = 'rgba(239,68,68,0.35)'; }}
         >
           🗑 Clear & Start New Conference
         </button>

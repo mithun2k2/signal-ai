@@ -1,16 +1,17 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@progress/kendo-react-buttons';
 import { Input, TextArea } from '@progress/kendo-react-inputs';
 import { storage } from '@/lib/storage';
 import { Capture, UserProfile } from '@/lib/types';
+import SignalLogo from '@/components/SignalLogo';
+import CaptureIcon from '@/components/CaptureIcon';
 
 const questions = [
-  { key: 'name', label: 'What is your name?', placeholder: 'Hassan', type: 'input' },
-  { key: 'currentWork', label: 'What are you working on right now?', placeholder: 'Building an AI SaaS for content repurposing...', type: 'textarea' },
-  { key: 'biggestChallenge', label: 'What problem are you stuck on?', placeholder: 'Scaling Railway deployments, reducing Claude API costs...', type: 'textarea' },
-  { key: 'canOffer', label: 'What can you offer others?', placeholder: 'FastAPI expertise, AI product architecture, startup advice...', type: 'textarea' },
+  { key: 'name', label: 'What is your name?', placeholder: 'Hassan', type: 'input', icon: 'user' },
+  { key: 'currentWork', label: 'What are you working on right now?', placeholder: 'Building an AI SaaS for content repurposing...', type: 'textarea', icon: 'rocket' },
+  { key: 'biggestChallenge', label: 'What problem are you stuck on?', placeholder: 'Scaling Railway deployments, reducing API costs...', type: 'textarea', icon: 'target' },
+  { key: 'canOffer', label: 'What can you offer others?', placeholder: 'FastAPI expertise, AI architecture, startup advice...', type: 'textarea', icon: 'bulb' },
 ];
 
 const demoCaptures: Capture[] = [
@@ -25,14 +26,12 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<UserProfile>({
-    name: '',
-    currentWork: '',
-    biggestChallenge: '',
-    canOffer: '',
+    name: '', currentWork: '', biggestChallenge: '', canOffer: '',
     conference: 'JSNation / React Summit 2025',
   });
 
   const current = questions[step];
+  const value = profile[current.key as keyof UserProfile];
 
   const handleNext = () => {
     if (step < questions.length - 1) {
@@ -44,43 +43,53 @@ export default function OnboardingPage() {
     }
   };
 
-  const value = profile[current.key as keyof UserProfile];
-
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-6">
-      <div className="w-full max-w-lg">
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', zIndex: 1 }}>
+      <div style={{ width: '100%', maxWidth: '460px' }}>
 
         {/* Logo */}
-        <div className="text-center mb-12">
-          <div className="text-6xl mb-4">⚡</div>
-          <h1 className="text-4xl font-bold text-white">SignalAI</h1>
-          <p className="text-gray-400 mt-2 text-lg">Turn conference chaos into career capital</p>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}>
+            <SignalLogo size={64} />
+          </div>
+          <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#f1f0ff', letterSpacing: '-0.5px', marginBottom: '8px' }}>
+            SignalAI
+          </h1>
+          <p style={{ color: 'rgba(196, 181, 253, 0.7)', fontSize: '15px' }}>
+            Turn conference chaos into career capital
+          </p>
         </div>
 
         {/* Progress dots */}
-        <div className="flex justify-center gap-2 mb-8">
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '32px' }}>
           {questions.map((_, i) => (
-            <div
-              key={i}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i <= step ? 'bg-violet-500 w-8' : 'bg-gray-700 w-2'
-              }`}
-            />
+            <div key={i} className={`dot ${i === step ? 'active' : 'inactive'}`} />
           ))}
         </div>
 
-        {/* Question card */}
-        <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800">
-          <label className="block text-lg font-semibold text-white mb-4">
-            {current.label}
-          </label>
+        {/* Card */}
+        <div className="glass" style={{ padding: '28px' }}>
+          {/* Step indicator */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+            <div className="icon-box icon-box-purple">
+              <CaptureIcon type={current.icon as any} size={22} />
+            </div>
+            <div>
+              <p style={{ fontSize: '11px', color: 'rgba(196, 181, 253, 0.5)', fontWeight: '600', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                Step {step + 1} of {questions.length}
+              </p>
+              <p style={{ fontSize: '15px', fontWeight: '600', color: '#f1f0ff', marginTop: '2px' }}>
+                {current.label}
+              </p>
+            </div>
+          </div>
 
           {current.type === 'input' ? (
             <Input
               value={value}
               onChange={e => setProfile({ ...profile, [current.key]: String(e.value) })}
               placeholder={current.placeholder}
-              style={{ width: '100%', fontSize: '16px' }}
+              style={{ width: '100%', fontSize: '15px' }}
             />
           ) : (
             <TextArea
@@ -88,30 +97,21 @@ export default function OnboardingPage() {
               onChange={e => setProfile({ ...profile, [current.key]: String(e.value) })}
               placeholder={current.placeholder}
               rows={3}
-              style={{ width: '100%', fontSize: '16px' }}
+              style={{ width: '100%', fontSize: '15px' }}
             />
           )}
 
-          <Button
-            themeColor="primary"
+          <button
+            className="btn-neon pulse-glow"
             onClick={handleNext}
             disabled={!value?.trim()}
-            style={{
-              width: '100%',
-              marginTop: '24px',
-              padding: '12px',
-              fontSize: '16px',
-              fontWeight: '600',
-              background: '#7c3aed',
-              border: 'none',
-              borderRadius: '12px',
-            }}
+            style={{ marginTop: '20px' }}
           >
-            {step < questions.length - 1 ? 'Next →' : 'Start Capturing →'}
-          </Button>
+            {step < questions.length - 1 ? 'Next →' : '⚡ Start Capturing'}
+          </button>
         </div>
 
-        <p className="text-center text-gray-600 text-sm mt-4">
+        <p style={{ textAlign: 'center', color: 'rgba(167, 139, 250, 0.35)', fontSize: '12px', marginTop: '16px' }}>
           60 seconds setup · {questions.length - step - 1} questions remaining
         </p>
       </div>
