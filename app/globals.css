@@ -257,3 +257,10 @@ body::before {
   50% { box-shadow: 0 0 35px rgba(124, 58, 237, 0.5); }
 }
 .pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+.k-chart, .k-chart-surface {
+  background: transparent !important;
+}
+.k-chart text {
+  fill: #a78bfa !important;
+}
