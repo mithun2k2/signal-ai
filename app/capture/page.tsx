@@ -47,6 +47,11 @@ export default function CapturePage() {
     setCaptures(storage.getCaptures());
   };
 
+  const handleReset = () => {
+    storage.clearAll();
+    router.push('/');
+  };
+
   const activeTypeDef = CAPTURE_TYPES.find(t => t.type === activeType)!;
 
   return (
@@ -55,7 +60,13 @@ export default function CapturePage() {
       {/* Header */}
       <div className="header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <SignalLogo size={32} />
+          <button
+            onClick={handleReset}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}
+            title="Reset & go to onboarding"
+          >
+            <SignalLogo size={32} />
+          </button>
           <span style={{ fontWeight: '700', fontSize: '17px', color: '#f1f0ff' }}>SignalAI</span>
           <span className="badge badge-violet">{captures.length} captured</span>
         </div>
