@@ -1,7 +1,7 @@
 # ⚡ SignalAI
 ### Turn conference chaos into career capital — automatically.
 
-Built for the **Progress x GitNation Hackathon 2025** (JSNation / React Summit)
+Built for the **Progress x GitNation Hackathon 2026** (JSNation / React Summit)
 
 🌐 **Live Demo:** [signal-ai-blond.vercel.app](https://signal-ai-blond.vercel.app)
 
@@ -105,7 +105,7 @@ lib/
 
 ## Hackathon
 
-**Event:** Progress x GitNation Hackathon 2025
+**Event:** Progress x GitNation Hackathon 2026
 **Prize Pool:** €10,000
 **Stack requirement:** Kendo UI for React ✅
 **Team:** ForgeAI (solo)
